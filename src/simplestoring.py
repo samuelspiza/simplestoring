@@ -38,11 +38,12 @@ path directly or request the substore from the returend Store instance.
 """
 
 __author__ = "Samuel Spiza <sam.spiza@gmail.com>"
-__version__ = "0.1"
+__version__ = "0.1.1"
 __all__ = ["Stores","Store","SubStore","ListStore","ListSubStore"]
 
 import os
 import json
+import codecs
 
 class Stores:
     _stores = {}
@@ -141,11 +142,11 @@ class BaseStoreSkelleton:
         return value in tmp
 
     def _read(self):
-        with open(self.key, "r") as fp:
+        with codecs.open(self.key, "r", "utf-8") as fp:
             self._value = json.load(fp)
 
     def _write(self):
-        with open(self.key, "w") as fp:
+        with codecs.open(self.key, "w", "utf-8") as fp:
             json.dump(self._value, fp, sort_keys=True, indent=4)
 
 class SubStoreSkelleton:
