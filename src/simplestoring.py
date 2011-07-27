@@ -38,7 +38,7 @@ path directly or request the substore from the returend Store instance.
 """
 
 __author__ = "Samuel Spiza <sam.spiza@gmail.com>"
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 __all__ = ["Stores","Store","SubStore","ListStore","ListSubStore"]
 
 import os
@@ -128,6 +128,16 @@ class BaseStoreSkelleton:
         else:
             self.set(value=value, path=[key])
 
+    def delete(self, key=None, path=[]):
+        if key is None:
+            tmp = self._value
+            for key in path[:-1]:
+                tmp = tmp[key]
+            del tmp[path[-1]]
+            self._write()
+        else:
+            self.delete(path=[key])
+
     def append(self, value, path=[]):
         tmp = self._value
         for key in path:
@@ -166,6 +176,12 @@ class SubStoreSkelleton:
             return self.parent.set(value=value, path=[self.key]+path)
         else:
             return self.parent.set(value=value, path=[self.key]+[key])
+
+    def delete(self, key=None, path=[]):
+        if key is None:
+            return self.parent.delete(path=[self.key]+path)
+        else:
+            return self.parent.delete(path=[self.key]+[key])
 
     def append(self, value=None, path=[]):
         return self.parent.append(value=value, path=[self.key]+path)
